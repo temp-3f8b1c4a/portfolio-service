@@ -1,5 +1,5 @@
 status: "draft (unapproved)"
-graph_sha: "7680bd1a8118ca54551904fe851f0078043f0961b9db608402375853b10d7387"
+graph_sha: "282d4db7ac75b2aec2a6222ea58ef3fd2502f1df8db3727d0a1b435f7f6019af"
 questions:
   - id: Q1_do_you_use_ai
     question: "Do you use AI?"
@@ -22,7 +22,7 @@ questions:
     evidence: []
   - id: Q4_inference_region
     question: "Where does inference run?"
-    answer: "anthropic: eu-central-1; anthropic processor: Anthropic (Ireland) (Ireland); DPA: trust/dpas/anthropic.md"
+    answer: "anthropic: eu-west-1; anthropic processor: Anthropic (Ireland) (Ireland); DPA: trust/dpas/anthropic.md"
     cite:
       - "apps/assist/trust/manual.yml"
       - "trust/dpas/anthropic.md"
