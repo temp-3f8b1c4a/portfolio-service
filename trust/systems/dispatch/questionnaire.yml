@@ -1,5 +1,5 @@
 status: "draft (unapproved)"
-graph_sha: "ecfedddff733f610d789d81bd4f20c493479e9bd8fb79c5906514e835e6dfaa0"
+graph_sha: "404632fc8ed35e55e5f608a1aa7146b63fbcd79a8ef8dac9e5788d6a050ffcff"
 questions:
   - id: Q1_do_you_use_ai
     question: "Do you use AI?"
@@ -22,7 +22,7 @@ questions:
     evidence: []
   - id: Q4_inference_region
     question: "Where does inference run?"
-    answer: "openai: us-east-1; openai processor: OpenAI (US) (United States); DPA: trust/dpas/openai.md"
+    answer: "openai: us-east-2; openai processor: OpenAI (US) (United States); DPA: trust/dpas/openai.md"
     cite:
       - "apps/dispatch/trust/manual.yml"
       - "trust/dpas/openai.md"

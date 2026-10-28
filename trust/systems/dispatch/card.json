@@ -1,14 +1,14 @@
 {
   "schema_version": 2,
   "hash_version": 1,
-  "graph_sha": "ecfedddff733f610d789d81bd4f20c493479e9bd8fb79c5906514e835e6dfaa0",
+  "graph_sha": "404632fc8ed35e55e5f608a1aa7146b63fbcd79a8ef8dac9e5788d6a050ffcff",
   "system": {
     "name": "Dispatch Service",
     "description": "MTP-27 synthetic dispatch service."
   },
   "repo": "portfolio-service",
-  "commit": "c0f6b9b4c6870f79a60ef40aec6da86d60fdd28d",
-  "scanned_at": "2026-10-28T14:29:53.1064239+00:00",
+  "commit": "10870bcce49b680dca7ca5c77addca5ed5012aa5",
+  "scanned_at": "2026-10-28T15:38:14.1851904+00:00",
   "cli_version": "1.0.0",
   "detector_packs": [
     {
@@ -44,7 +44,7 @@
     {
       "provider": "openai",
       "model_id": "gpt-4o",
-      "region": "us-east-1",
+      "region": "us-east-2",
       "endpoint": "https://api.openai.com/v1",
       "source": "manual",
       "evidence": [

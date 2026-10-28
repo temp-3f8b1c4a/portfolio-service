@@ -6,9 +6,9 @@
 
 - **System:** Dispatch Service
 - **Repository:** `portfolio-service`
-- **Commit:** `c0f6b9b4c6870f79a60ef40aec6da86d60fdd28d`
-- **Graph fingerprint:** `ecfedddff733`
-- **Full fingerprint (SHA-256):** `ecfedddff733f610d789d81bd4f20c493479e9bd8fb79c5906514e835e6dfaa0`
+- **Commit:** `10870bcce49b680dca7ca5c77addca5ed5012aa5`
+- **Graph fingerprint:** `404632fc8ed3`
+- **Full fingerprint (SHA-256):** `404632fc8ed35e55e5f608a1aa7146b63fbcd79a8ef8dac9e5788d6a050ffcff`
 - **CLI version:** `1.0.0`
 - **Description:** MTP-27 synthetic dispatch service.
 
@@ -23,7 +23,7 @@
 
 | Provider | Model | Region | Endpoint | Source | Cite |
 |---|---|---|---|---|---|
-| openai | gpt-4o | us-east-1 | https://api.openai.com/v1 | manual | `apps/dispatch/trust/manual.yml:3` |
+| openai | gpt-4o | us-east-2 | https://api.openai.com/v1 | manual | `apps/dispatch/trust/manual.yml:3` |
 
 ## Declared subprocessors
 
@@ -113,40 +113,5 @@ Ecosystems are recognised from tracked manifest and lockfile names only; an ecos
 
 ## Generated from
 
-Commit `c0f6b9b4c6870f79a60ef40aec6da86d60fdd28d` using AI TrustBOM CLI `1.0.0`.
-
-## Gate assessment
-
-- **Status:** bootstrap required
-- **Summary:** The gate is blocked because this repository has no reviewed graph approval.
-
-### Semantic changes
-
-No semantic graph changes are available.
-
-### Required actions
-
-#### No approval file exists
-
-AI TrustBOM could not find trust/systems/dispatch/approvals.yml. The first graph must be reviewed by Trust before it can become the baseline.
-
-Choose the appropriate resolution:
-
-- Review the generated system card and repository evidence.
-- Create trust/systems/dispatch/approvals.yml from the template below and complete every human-owned value.
-- Request the configured Trust or CODEOWNER review; check the full graph before approving its fingerprint.
-
-Example:
-
-```yaml
-approved_graph_sha: ecfedddff733f610d789d81bd4f20c493479e9bd8fb79c5906514e835e6dfaa0
-approved_by: <Trust reviewer>
-approved_at: <ISO-8601 timestamp>
-high_risk: unset
-article_50: unset
-```
-
-### Next step
-
-Have Trust review graph fingerprint ecfedddff733 and commit trust/systems/dispatch/approvals.yml. Copy the full fingerprint from the approval template above.
+Commit `10870bcce49b680dca7ca5c77addca5ed5012aa5` using AI TrustBOM CLI `1.0.0`.
 
