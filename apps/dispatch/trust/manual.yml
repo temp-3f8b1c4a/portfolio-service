@@ -1,0 +1,7 @@
+not_in_scope: []
+models:
+  - provider: openai
+    model_id: gpt-4o
+    region: us-east-1
+    endpoint: https://api.openai.com/v1
+    reason: MTP-27 synthetic dispatch deployment.

@@ -1,0 +1,30 @@
+# trustbom-generated: version=1.0.0-dev.497 sha256=33db5214ce5fd40f7400a1606ebfe191329e38684dea51ebea996785b7ba07fe
+name: AI TrustBOM Growth
+
+on:
+  pull_request:
+  push:
+    branches:
+      - "main"
+
+permissions:
+  contents: read
+
+jobs:
+  growth:
+    uses: ./.github/workflows/growth.yml
+    with:
+      portfolio-path: trust/portfolio.yml
+      fail-on: medium
+      # questions-csv: rfi/questions.csv
+      # imports-artifact: caller-prepared-sibling-bundles
+    # Pass the license key for the paid pack, answer and publish steps on the default branch.
+    # An empty secret leaves the CLI's license-missing diagnostic (exit 4) unchanged.
+    # For sibling imports only, also set a read-only cross-repository secret.
+    secrets:
+      license-key: ${{ secrets.TRUSTBOM_LICENSE_KEY }}
+    #   sibling-read-token: <map your read-only GitHub secret here>
+    permissions:
+      contents: read
+      pull-requests: write
+      checks: write

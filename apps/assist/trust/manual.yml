@@ -1,0 +1,7 @@
+not_in_scope: []
+models:
+  - provider: anthropic
+    model_id: claude-sonnet-4-5
+    region: eu-central-1
+    endpoint: https://api.anthropic.com
+    reason: MTP-27 synthetic assist deployment.

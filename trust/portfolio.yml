@@ -1,0 +1,10 @@
+org: Synthetic Test Vendor
+systems:
+  - id: assist
+    path: apps/assist
+    system_yml: apps/assist/trust/system.yml
+    manual_yml: apps/assist/trust/manual.yml
+  - id: dispatch
+    path: apps/dispatch
+    system_yml: apps/dispatch/trust/system.yml
+    manual_yml: apps/dispatch/trust/manual.yml

@@ -1,0 +1,11 @@
+subprocessors:
+  - provider: anthropic
+    party: Anthropic (Ireland)
+    purpose: Synthetic assist inference
+    location: Ireland
+    dpa_path: trust/dpas/anthropic.md
+  - provider: openai
+    party: OpenAI (US)
+    purpose: Synthetic dispatch inference
+    location: United States
+    dpa_path: trust/dpas/openai.md

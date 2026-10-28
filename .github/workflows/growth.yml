@@ -1,0 +1,261 @@
+# trustbom-generated: version=1.0.0-dev.497 sha256=e23c16edd61f71bbf04ec8508256dcbe181848ba9b4e6ef66c61bd8bf458748d
+# Reusable Growth workflow. Written to .github/workflows/growth.yml by `trustbom init --growth`.
+# It runs the caller repository's own pinned Action (.github/actions/trustbom), which installs
+# the published trustbom package; it needs no access to the AI TrustBOM source repository.
+name: AI TrustBOM Growth
+
+on:
+  workflow_call:
+    inputs:
+      portfolio-path:
+        description: Tracked portfolio declaration (currently trust/portfolio.yml).
+        type: string
+        default: trust/portfolio.yml
+      questions-csv:
+        description: Optional tracked buyer CSV with id,text columns.
+        type: string
+        default: ""
+      fail-on:
+        description: Minimum unwaived finding severity that blocks approval.
+        type: string
+        default: medium
+      imports-artifact:
+        description: Optional name of a caller-prepared sibling bundle artifact in this run.
+        type: string
+        default: ""
+    secrets:
+      sibling-read-token:
+        description: Read-only GitHub token authorized for every imported sibling repository.
+        required: false
+      license-key:
+        description: AI TrustBOM license key for the paid pack, answer and publish steps on the default branch. The free review job never reads it.
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  review:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      checks: write
+    outputs:
+      system-ids: ${{ steps.trustbom.outputs.system-ids }}
+      gate-status: ${{ steps.trustbom.outputs.gate-status }}
+      action-outcome: ${{ steps.trustbom.outcome }}
+    steps:
+      - name: Check out caller history
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Validate portfolio input
+        shell: bash
+        env:
+          PORTFOLIO_PATH: ${{ inputs.portfolio-path }}
+        run: |
+          test "$PORTFOLIO_PATH" = trust/portfolio.yml || {
+            echo "::error::portfolio-path must be trust/portfolio.yml (the CLI's canonical tracked declaration)"
+            exit 1
+          }
+          git ls-files --error-unmatch -- "$PORTFOLIO_PATH" >/dev/null
+      - name: Scan, gate, comment, and check
+        id: trustbom
+        continue-on-error: true
+        uses: ./.github/actions/trustbom
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          portfolio: "true"
+          fail-on: ${{ inputs.fail-on }}
+          comment: "true"
+      - name: Stage draft cards even when approval fails
+        if: steps.trustbom.outputs.system-ids != ''
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: trustbom-internal-draft-cards
+          path: trust/systems/*/card.json
+          if-no-files-found: error
+          retention-days: 7
+
+  draft-cards:
+    name: Draft card (${{ matrix.system }})
+    needs: review
+    if: needs.review.result == 'success' && needs.review.outputs.system-ids != '' && needs.review.outputs.system-ids != '[]'
+    strategy:
+      fail-fast: false
+      matrix:
+        system: ${{ fromJSON(needs.review.outputs.system-ids) }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Retrieve internal draft cards
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: trustbom-internal-draft-cards
+          path: draft-cards
+      - name: Upload system draft (not approved for buyers)
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: trustbom-DRAFT-${{ matrix.system }}-card
+          path: draft-cards/${{ matrix.system }}/card.json
+          if-no-files-found: error
+          retention-days: 7
+
+  review-gate:
+    name: Growth approval gate
+    needs: [review, draft-cards]
+    if: always() && github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Enforce gate after draft uploads
+        shell: bash
+        env:
+          SCAN_JOB: ${{ needs.review.result }}
+          ACTION_OUTCOME: ${{ needs.review.outputs.action-outcome }}
+          GATE_STATUS: ${{ needs.review.outputs.gate-status }}
+          DRAFT_JOB: ${{ needs.draft-cards.result }}
+        run: |
+          if [[ "$SCAN_JOB" != success || "$ACTION_OUTCOME" != success ||
+                ( "$GATE_STATUS" != passed && "$GATE_STATUS" != breakglass ) ||
+                "$DRAFT_JOB" != success ]]; then
+            echo "::error::Growth portfolio gate or draft artifact upload failed"
+            exit 1
+          fi
+
+  approved:
+    name: Approved buyer bundle
+    if: github.event_name == 'push' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      system-ids: ${{ steps.cards.outputs.system-ids }}
+    steps:
+      - name: Check out caller default-branch history
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Validate tracked inputs
+        shell: bash
+        env:
+          PORTFOLIO_PATH: ${{ inputs.portfolio-path }}
+          QUESTIONS_CSV: ${{ inputs.questions-csv }}
+        run: |
+          test "$PORTFOLIO_PATH" = trust/portfolio.yml || {
+            echo "::error::portfolio-path must be trust/portfolio.yml (the CLI's canonical tracked declaration)"
+            exit 1
+          }
+          git ls-files --error-unmatch -- "$PORTFOLIO_PATH" >/dev/null
+          if [[ -n "$QUESTIONS_CSV" ]]; then
+            git ls-files --error-unmatch -- "$QUESTIONS_CSV" >/dev/null
+            test -f "$QUESTIONS_CSV"
+          fi
+      - name: Scan and gate the default branch
+        id: trustbom
+        uses: ./.github/actions/trustbom
+        with:
+          portfolio: "true"
+          fail-on: ${{ inputs.fail-on }}
+          comment: "false"
+      - name: Require independently passed approvals
+        shell: bash
+        env:
+          GATE_STATUS: ${{ steps.trustbom.outputs.gate-status }}
+          SYSTEM_IDS: ${{ steps.trustbom.outputs.system-ids }}
+        run: |
+          test "$GATE_STATUS" = passed && test -n "$SYSTEM_IDS" && test "$SYSTEM_IDS" != '[]' || {
+            echo "::error::Default-branch systems are not all approved; no buyer bundle will be produced"
+            exit 1
+          }
+      - name: Download explicitly supplied sibling bundle
+        if: inputs.imports-artifact != ''
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: ${{ inputs.imports-artifact }}
+          path: .trustbom-imports
+      - name: Install the repository's pinned AI TrustBOM
+        id: install
+        uses: ./.github/actions/trustbom/install
+      - name: Verify, pack, answer, and publish
+        shell: bash
+        env:
+          TRUSTBOM_LAUNCHER: ${{ steps.install.outputs.launcher }}
+          FAIL_ON: ${{ inputs.fail-on }}
+          QUESTIONS_CSV: ${{ inputs.questions-csv }}
+          IMPORTS_ARTIFACT: ${{ inputs.imports-artifact }}
+          TRUSTBOM_GITHUB_TOKEN: ${{ secrets.sibling-read-token }}
+          TRUSTBOM_LICENSE_KEY: ${{ secrets.license-key }}
+        run: |
+          args=(--fail-on "$FAIL_ON")
+          if [[ -n "$IMPORTS_ARTIFACT" ]]; then
+            if [[ -z "$TRUSTBOM_GITHUB_TOKEN" ]]; then
+              echo "::error::imports-artifact requires a separately scoped sibling-read-token"
+              exit 1
+            fi
+            args+=(--from .trustbom-imports)
+          else
+            unset TRUSTBOM_GITHUB_TOKEN
+          fi
+          trustbom() {
+            node "$TRUSTBOM_LAUNCHER" "$@"
+          }
+          trustbom pack "${args[@]}"
+          if [[ -n "$QUESTIONS_CSV" ]]; then
+            answer_args=(--questions "$QUESTIONS_CSV" --fail-on "$FAIL_ON")
+            if [[ -n "$IMPORTS_ARTIFACT" ]]; then
+              answer_args+=(--from .trustbom-imports)
+            else
+              answer_args+=(--portfolio)
+            fi
+            trustbom answer "${answer_args[@]}"
+          fi
+          trustbom publish "${args[@]}"
+          test -s export/site/index.html && test -s export/site/index.pdf
+          bundle=(site portfolio)
+          if [[ -f export/answers.csv ]]; then
+            bundle+=(answers.csv unmatched.csv)
+          fi
+          (cd export && zip -q -r approved-html-pack.zip "${bundle[@]}")
+      - name: List verified approved systems
+        id: cards
+        shell: bash
+        run: |
+          python3 -c "import json, pathlib; print('system-ids=' + json.dumps(sorted(p.name for p in pathlib.Path('export/portfolio/systems').iterdir() if p.is_dir())))" >> "$GITHUB_OUTPUT"
+      - name: Upload approved buyer bundle
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: trustbom-APPROVED-buyer-bundle
+          path: export/
+          if-no-files-found: error
+
+  approved-cards:
+    name: Approved card (${{ matrix.system }})
+    needs: approved
+    if: needs.approved.result == 'success' && needs.approved.outputs.system-ids != '' && needs.approved.outputs.system-ids != '[]'
+    strategy:
+      fail-fast: false
+      matrix:
+        system: ${{ fromJSON(needs.approved.outputs.system-ids) }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Retrieve verified approved portfolio
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: trustbom-APPROVED-buyer-bundle
+          path: approved-export
+      - name: Upload independently approved graph
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: trustbom-APPROVED-${{ matrix.system }}-card
+          path: approved-export/portfolio/systems/${{ matrix.system }}/card.json
+          if-no-files-found: error
