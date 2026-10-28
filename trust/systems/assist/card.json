@@ -1,0 +1,132 @@
+{
+  "schema_version": 2,
+  "hash_version": 1,
+  "graph_sha": "7680bd1a8118ca54551904fe851f0078043f0961b9db608402375853b10d7387",
+  "system": {
+    "name": "Assist Service",
+    "description": "MTP-27 synthetic assist service."
+  },
+  "repo": "portfolio-service",
+  "commit": "c0f6b9b4c6870f79a60ef40aec6da86d60fdd28d",
+  "scanned_at": "2026-10-28T14:29:52.9870312+00:00",
+  "cli_version": "1.0.0",
+  "detector_packs": [
+    {
+      "name": "assist-dotnet",
+      "version": "1.0.0"
+    },
+    {
+      "name": "assist-go",
+      "version": "1.0.0"
+    },
+    {
+      "name": "assist-java",
+      "version": "1.0.0"
+    },
+    {
+      "name": "assist-js",
+      "version": "1.7.0"
+    },
+    {
+      "name": "assist-python",
+      "version": "1.4.0"
+    },
+    {
+      "name": "data-processing",
+      "version": "1.0.0"
+    },
+    {
+      "name": "raw-http",
+      "version": "1.0.0"
+    }
+  ],
+  "models": [
+    {
+      "provider": "anthropic",
+      "model_id": "claude-sonnet-4-5",
+      "region": "eu-central-1",
+      "endpoint": "https://api.anthropic.com",
+      "source": "manual",
+      "evidence": [
+        {
+          "path": "apps/assist/trust/manual.yml",
+          "start_line": 3
+        }
+      ]
+    }
+  ],
+  "tools": [],
+  "mcp_servers": [],
+  "data_flows": [],
+  "controls": [],
+  "eval_gates": [],
+  "eval_results": [],
+  "subprocessors": [
+    {
+      "provider": "anthropic",
+      "party": "Anthropic (Ireland)",
+      "purpose": "Synthetic assist inference",
+      "location": "Ireland",
+      "dpa_path": "trust/dpas/anthropic.md",
+      "source": "manual",
+      "evidence": [
+        {
+          "path": "trust/dpas/anthropic.md"
+        },
+        {
+          "path": "trust/subprocessors.yml",
+          "start_line": 2
+        }
+      ]
+    }
+  ],
+  "data_handling": [],
+  "findings": [],
+  "classification": {
+    "role": "unknown",
+    "gpai_provider": false,
+    "high_risk": "unknown",
+    "article_50": "unknown"
+  },
+  "coverage": {
+    "detector_packs": [
+      {
+        "name": "assist-dotnet",
+        "version": "1.0.0"
+      },
+      {
+        "name": "assist-go",
+        "version": "1.0.0"
+      },
+      {
+        "name": "assist-java",
+        "version": "1.0.0"
+      },
+      {
+        "name": "assist-js",
+        "version": "1.7.0"
+      },
+      {
+        "name": "assist-python",
+        "version": "1.4.0"
+      },
+      {
+        "name": "data-processing",
+        "version": "1.0.0"
+      },
+      {
+        "name": "raw-http",
+        "version": "1.0.0"
+      }
+    ],
+    "ecosystems": [],
+    "not_in_scope": [],
+    "method_limits": [
+      "allowlisted_configuration_patterns",
+      "manifest_and_lockfile_inventory",
+      "no_ast_analysis",
+      "no_runtime_inspection",
+      "tracked_files_only"
+    ]
+  }
+}
