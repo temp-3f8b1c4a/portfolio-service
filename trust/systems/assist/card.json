@@ -1,14 +1,14 @@
 {
   "schema_version": 2,
   "hash_version": 1,
-  "graph_sha": "7680bd1a8118ca54551904fe851f0078043f0961b9db608402375853b10d7387",
+  "graph_sha": "282d4db7ac75b2aec2a6222ea58ef3fd2502f1df8db3727d0a1b435f7f6019af",
   "system": {
     "name": "Assist Service",
     "description": "MTP-27 synthetic assist service."
   },
   "repo": "portfolio-service",
-  "commit": "c0f6b9b4c6870f79a60ef40aec6da86d60fdd28d",
-  "scanned_at": "2026-10-28T14:29:52.9870312+00:00",
+  "commit": "2e1f7303d50a47fe6c20add107135d11a7208479",
+  "scanned_at": "2026-10-28T14:59:47.2684493+00:00",
   "cli_version": "1.0.0",
   "detector_packs": [
     {
@@ -44,7 +44,7 @@
     {
       "provider": "anthropic",
       "model_id": "claude-sonnet-4-5",
-      "region": "eu-central-1",
+      "region": "eu-west-1",
       "endpoint": "https://api.anthropic.com",
       "source": "manual",
       "evidence": [

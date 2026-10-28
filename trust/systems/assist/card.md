@@ -6,9 +6,9 @@
 
 - **System:** Assist Service
 - **Repository:** `portfolio-service`
-- **Commit:** `c0f6b9b4c6870f79a60ef40aec6da86d60fdd28d`
-- **Graph fingerprint:** `7680bd1a8118`
-- **Full fingerprint (SHA-256):** `7680bd1a8118ca54551904fe851f0078043f0961b9db608402375853b10d7387`
+- **Commit:** `2e1f7303d50a47fe6c20add107135d11a7208479`
+- **Graph fingerprint:** `282d4db7ac75`
+- **Full fingerprint (SHA-256):** `282d4db7ac75b2aec2a6222ea58ef3fd2502f1df8db3727d0a1b435f7f6019af`
 - **CLI version:** `1.0.0`
 - **Description:** MTP-27 synthetic assist service.
 
@@ -23,7 +23,7 @@
 
 | Provider | Model | Region | Endpoint | Source | Cite |
 |---|---|---|---|---|---|
-| anthropic | claude-sonnet-4-5 | eu-central-1 | https://api.anthropic.com | manual | `apps/assist/trust/manual.yml:3` |
+| anthropic | claude-sonnet-4-5 | eu-west-1 | https://api.anthropic.com | manual | `apps/assist/trust/manual.yml:3` |
 
 ## Declared subprocessors
 
@@ -113,40 +113,18 @@ Ecosystems are recognised from tracked manifest and lockfile names only; an ecos
 
 ## Generated from
 
-Commit `c0f6b9b4c6870f79a60ef40aec6da86d60fdd28d` using AI TrustBOM CLI `1.0.0`.
+Commit `2e1f7303d50a47fe6c20add107135d11a7208479` using AI TrustBOM CLI `1.0.0`.
 
 ## Gate assessment
 
-- **Status:** bootstrap required
-- **Summary:** The gate is blocked because this repository has no reviewed graph approval.
+- **Status:** passed
+- **Summary:** The current graph matches its approval and has no blocking policy conditions.
 
 ### Semantic changes
 
-No semantic graph changes are available.
-
-### Required actions
-
-#### No approval file exists
-
-AI TrustBOM could not find trust/systems/assist/approvals.yml. The first graph must be reviewed by Trust before it can become the baseline.
-
-Choose the appropriate resolution:
-
-- Review the generated system card and repository evidence.
-- Create trust/systems/assist/approvals.yml from the template below and complete every human-owned value.
-- Request the configured Trust or CODEOWNER review; check the full graph before approving its fingerprint.
-
-Example:
-
-```yaml
-approved_graph_sha: 7680bd1a8118ca54551904fe851f0078043f0961b9db608402375853b10d7387
-approved_by: <Trust reviewer>
-approved_at: <ISO-8601 timestamp>
-high_risk: unset
-article_50: unset
-```
+- Changed model anthropic / claude-sonnet-4-5 region: eu-central-1 -\> eu-west-1.
 
 ### Next step
 
-Have Trust review graph fingerprint 7680bd1a8118 and commit trust/systems/assist/approvals.yml. Copy the full fingerprint from the approval template above.
+No approval action is required.
 
