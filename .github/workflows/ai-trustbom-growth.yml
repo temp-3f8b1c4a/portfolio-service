@@ -14,7 +14,7 @@ jobs:
   growth:
     uses: ./.github/workflows/growth.yml
     with:
-      portfolio-path: trust/portfolio.yml
+      portfolio-path: ./trust/portfolio.yml
       fail-on: medium
       # questions-csv: rfi/questions.csv
       # imports-artifact: caller-prepared-sibling-bundles
